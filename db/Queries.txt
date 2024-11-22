@@ -1,0 +1,5 @@
+Queries
+
+1) Get all games played by a user
+query: select ug.username, ug.game_id, g.name, g.metacritic, g.developers from user_games ug inner join games g on ug.game_id = g.id where ug.username = 'varun';
+
