@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 import "./Register.css";
 
 function Register({ onClose }) {
@@ -9,6 +10,8 @@ function Register({ onClose }) {
     email: "", // Only used for Sign Up
   });
 
+  const navigate = useNavigate(); // Initialize navigate
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -16,12 +19,12 @@ function Register({ onClose }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     const endpoint = isSigningUp ? "/api/signup" : "/api/signin"; // Adjust API endpoint
     const payload = isSigningUp
       ? { username: formData.username, password: formData.password, email: formData.email }
       : { username: formData.username, password: formData.password };
-  
+
     try {
       const response = await fetch(endpoint, {
         method: "POST",
@@ -30,23 +33,21 @@ function Register({ onClose }) {
         },
         body: JSON.stringify(payload),
       });
-  
+
       const data = await response.json();
+
       if (response.ok) {
-        // Success: Handle accordingly
         console.log("Success:", data);
-  
+
         if (!isSigningUp) {
-          
-          localStorage.setItem("authToken", data.token);
           alert("Logged in successfully!");
-          onClose(); 
+          onClose(); // Close the modal
+          navigate("/profile"); // Redirect to the Profile page
         } else {
           alert("Sign Up successful! Please log in.");
-          setIsSigningUp(false); 
+          setIsSigningUp(false); // Switch to Sign In mode
         }
       } else {
-        
         alert(data.message || "An error occurred. Please try again.");
       }
     } catch (error) {
@@ -54,7 +55,6 @@ function Register({ onClose }) {
       alert("Unable to connect to the server. Please try again later.");
     }
   };
-  
 
   return (
     <div className="register-modal">
