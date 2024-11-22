@@ -6,16 +6,17 @@ function Navbar({ onRegisterClick }) {
   const [searchResults, setSearchResults] = useState(null); // State to store the search results
   const [error, setError] = useState(null); // State to handle errors
 
+  // Updated handleSearch function to use GET request
   const handleSearch = async () => {
     if (!searchQuery.trim()) return; // Don't make a request if the search query is empty
 
     try {
-      // Send the request to the backend with the entered game name
-      const response = await fetch(`/api/search?game=${searchQuery}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
+      const queryParams = new URLSearchParams({
+        game: searchQuery, // Add the game name as a query parameter
+      });
+
+      const response = await fetch(`/api/search?${queryParams.toString()}`, {
+        method: "GET", // Use GET request instead of POST
       });
 
       if (!response.ok) {
@@ -27,12 +28,12 @@ function Navbar({ onRegisterClick }) {
       if (data.length === 0) {
         setSearchResults("No results found.");
       } else {
-        setSearchResults(data);
+        setSearchResults(data); // Update the results
       }
       setError(null); // Clear previous errors if the request is successful
     } catch (error) {
       console.error("Error fetching search results:", error);
-      setError("An error occurred while searching. Please try again later.");
+      setError("Not found");
       setSearchResults(null); // Clear previous search results
     }
   };
@@ -46,7 +47,6 @@ function Navbar({ onRegisterClick }) {
   return (
     <nav className="navbar">
       <div className="nav-options">
-        {/* Removed the More Games link */}
         <a
           href="https://github.com/pranavpa8788/FindYourGames"
           target="_blank"

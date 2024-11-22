@@ -52,7 +52,7 @@ main {
 
 /* Game card styles */
 .game-card {
-  background: linear-gradient(145deg, #3d5a80, #98c1d9); /* Vibrant blue gradient */
+  background: linear-gradient(145deg, #acc6e7, #5d5e5f); /* Vibrant blue gradient */
   border-radius: 15px;
   padding: 25px;
   width: 100%;

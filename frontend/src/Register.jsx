@@ -21,29 +21,27 @@ function Register({ onClose }) {
     e.preventDefault();
 
     const endpoint = isSigningUp ? "/api/signup" : "/api/signin"; // Adjust API endpoint
-    const payload = isSigningUp
-      ? { username: formData.username, password: formData.password, email: formData.email }
-      : { username: formData.username, password: formData.password };
+    const queryParams = new URLSearchParams({
+      username: formData.username,
+      password: formData.password,
+    });
+
+    const url = `${endpoint}?${queryParams.toString()}`; // Append query parameters to the URL
 
     try {
-      const response = await fetch(endpoint, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
+      const response = await fetch(url, {
+        method: "GET", // Change method to GET
       });
 
       const data = await response.json();
 
-      if (response.status === 201) {
-        // Success response
+      if (response.status === 200) { // Success response for GET request
         console.log("Success:", data);
 
         if (!isSigningUp) {
           alert("Logged in successfully!");
           onClose(); // Close the modal
-          navigate("/profile"); // Redirect to the Profile page
+          navigate("/profile"); // Redirect to the Profile page after successful login
         } else {
           alert("Sign Up successful! Please log in.");
           setIsSigningUp(false); // Switch to Sign In mode
