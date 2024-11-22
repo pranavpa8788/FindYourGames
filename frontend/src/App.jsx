@@ -9,7 +9,7 @@ function App() {
   const [games] = useState([
     {
       id: 1,
-      title: "The Legend of Zelda",
+      title: "The Legend of Zeldaaaa",
       rating: 4.9,
       reviews: ["Amazing open world!", "A masterpiece."],
     },
@@ -18,6 +18,21 @@ function App() {
       title: "Elden Ring",
       rating: 4.8,
       reviews: ["Fantastic combat!", "Incredible design."],
+    },
+  ]);
+
+  const [todaysGames] = useState([
+    {
+      id: 1,
+      title: "Cyberpunk 2077",
+      rating: 4.6,
+      reviews: ["Great update!", "Visually stunning."],
+    },
+    {
+      id: 2,
+      title: "Hollow Knight",
+      rating: 4.7,
+      reviews: ["Beautifully designed!", "A must-play."],
     },
   ]);
 
@@ -41,22 +56,48 @@ function App() {
             element={
               <>
                 <header>
-                  <h1>Game Review Hub</h1>
+                  <h1>Game Reviews</h1>
                   <p>Explore reviews and share your thoughts on your favorite games!</p>
                 </header>
+                
                 <main>
-                  {games.map((game) => (
-                    <div key={game.id} className="game-card">
-                      <h2>{game.title}</h2>
-                      <p>Rating: {game.rating} / 5</p>
-                      <h3>Reviews:</h3>
-                      <ul>
-                        {game.reviews.map((review, index) => (
-                          <li key={index}>{review}</li>
-                        ))}
-                      </ul>
+                  {/* Featured Games Section */}
+                  <section>
+                    <h2>Popular Games</h2>
+                    <div className="game-list">
+                      {games.map((game) => (
+                        <div key={game.id} className="game-card">
+                          <h2>{game.title}</h2>
+                          <p>Rating: {game.rating} / 5</p>
+                          <h3>Reviews:</h3>
+                          <ul>
+                            {game.reviews.map((review, index) => (
+                              <li key={index}>{review}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
                     </div>
-                  ))}
+                  </section>
+
+                  {/* Today's Games Section */}
+                  <section>
+                    <h2>Today's Games</h2>
+                    <div className="game-list">
+                      {todaysGames.map((game) => (
+                        <div key={game.id} className="game-card">
+                          <h2>{game.title}</h2>
+                          <p>Rating: {game.rating} / 5</p>
+                          <h3>Reviews:</h3>
+                          <ul>
+                            {game.reviews.map((review, index) => (
+                              <li key={index}>{review}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+                  </section>
                 </main>
               </>
             }
@@ -69,7 +110,7 @@ function App() {
           />
         </Routes>
         <footer>
-          <p>Game Review Hub © 2024</p>
+          <p>Game Reviews © 2024</p>
         </footer>
       </div>
     </Router>

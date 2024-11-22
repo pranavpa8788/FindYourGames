@@ -2,60 +2,92 @@ import React, { useState } from "react";
 import "./Profile.css";
 
 function Profile() {
+  const [gameInput, setGameInput] = useState("");
+  const [userGames, setUserGames] = useState([]); // To store games entered by the user
   const [recommendedGames, setRecommendedGames] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  const handleAddGame = () => {
+    if (gameInput.trim() !== "") {
+      setUserGames([...userGames, gameInput]);
+      setGameInput("");
+    }
+  };
+
   const handleRecommendGames = async () => {
+    if (userGames.length === 0) {
+      alert("Please enter at least one game before requesting recommendations.");
+      return;
+    }
+
     setLoading(true);
     try {
-      // Sending a GET request to the backend for recommended games
       const response = await fetch("/api/recommend-games", {
-        method: "GET",
+        method: "POST", // Use POST to send data
         headers: {
           "Content-Type": "application/json",
-          // You can add auth token here if needed:
-          // Authorization: `Bearer ${localStorage.getItem("authToken")}`,
         },
+        body: JSON.stringify({ games: userGames }), // Send entered games to the backend
       });
 
-      const data = await response.json();
-
       if (response.ok) {
-        // If the response is successful, set the recommended games
-        setRecommendedGames(data.recommendedGames);
+        const games = await response.json();
+        setRecommendedGames(games); // Set recommended games from the response
       } else {
-        alert(data.message || "Failed to fetch recommended games.");
+        alert("Failed to fetch recommended games. Please try again.");
       }
     } catch (error) {
-      console.error("Error fetching recommendations:", error);
-      alert("Failed to fetch recommendations. Please try again later.");
+      console.error("Error fetching games:", error);
+      alert("Unable to connect to the server. Please try again later.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="profile">
+    <div className="profile-container">
       <h1>Welcome to Your Profile</h1>
-      <p>Here you can see game recommendations based on your preferences.</p>
-      <button className="recommend-btn" onClick={handleRecommendGames}>
+      <div className="game-input-section">
+        <input
+          type="text"
+          placeholder="Enter a game you have played"
+          value={gameInput}
+          onChange={(e) => setGameInput(e.target.value)}
+          className="game-input"
+        />
+        <button onClick={handleAddGame} className="add-game-btn">
+          Add Game
+        </button>
+      </div>
+      <div className="user-games">
+        {userGames.length > 0 && (
+          <>
+            <h2>Your Entered Games:</h2>
+            <ul>
+              {userGames.map((game, index) => (
+                <li key={index}>{game}</li>
+              ))}
+            </ul>
+          </>
+        )}
+      </div>
+      <button onClick={handleRecommendGames} className="recommend-btn" disabled={loading}>
         {loading ? "Loading..." : "Recommend Games"}
       </button>
-
-      {recommendedGames.length > 0 && (
-        <div className="game-list">
-          <h2>Recommended Games</h2>
-          <ul>
-            {recommendedGames.map((game) => (
-              <li key={game.id} className="game-item">
-                <h3>{game.title}</h3>
-                <p>Genre: {game.genre}</p>
-                <p>Rating: {game.rating} / 5</p>
-              </li>
+      <div className="recommended-games-section">
+        {recommendedGames.length > 0 ? (
+          <div className="recommended-games">
+            {recommendedGames.map((game, index) => (
+              <div key={index} className="game-card">
+                <h2>{game.title}</h2>
+                <p>Rating: {game.rating}</p>
+              </div>
             ))}
-          </ul>
-        </div>
-      )}
+          </div>
+        ) : (
+          <p>No recommendations yet. Click on "Recommend Games" to get suggestions.</p>
+        )}
+      </div>
     </div>
   );
 }

@@ -36,7 +36,8 @@ function Register({ onClose }) {
 
       const data = await response.json();
 
-      if (response.ok) {
+      if (response.status === 201) {
+        // Success response
         console.log("Success:", data);
 
         if (!isSigningUp) {
@@ -47,8 +48,12 @@ function Register({ onClose }) {
           alert("Sign Up successful! Please log in.");
           setIsSigningUp(false); // Switch to Sign In mode
         }
+      } else if (response.status === 400 || response.status === 401) {
+        // Handle client-side errors (e.g., invalid credentials, bad data)
+        alert(data.message || "Invalid credentials or missing fields. Please try again.");
       } else {
-        alert(data.message || "An error occurred. Please try again.");
+        // Handle other failure cases (e.g., server errors)
+        alert(data.message || "An error occurred. Please try again later.");
       }
     } catch (error) {
       console.error("Error:", error);
